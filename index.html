@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Operaciones de Contenedores en Terminales Portuarias</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#0f172a',    // Slate 900
+                            primary: '#0369a1', // Sky 700
+                            secondary: '#0284c7',// Sky 600
+                            accent: '#f59e0b',  // Amber 500
+                            light: '#f8fafc',   // Slate 50
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .hero-bg {
+            background-image: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.75)), url('https://images.unsplash.com/photo-1586528116311-ad8ed7c83a7a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .container-bg {
+            background-image: linear-gradient(rgba(248, 250, 252, 0.95), rgba(248, 250, 252, 0.95)), url('https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            will-change: opacity, visibility;
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: none;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0369a1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0284c7; 
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-800 bg-brand-light antialiased selection:bg-brand-secondary selection:text-white">
+
+    <!-- Navigation (Se añadió un ID y clases de transición para que se oculte suavemente) -->
+    <nav id="navbar" class="fixed w-full z-50 bg-brand-dark/95 backdrop-blur shadow-lg border-b border-gray-800 transition-transform duration-300 transform translate-y-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex-shrink-0 flex items-center gap-3">
+                    <i class="fa-solid fa-ship text-brand-secondary text-3xl"></i>
+                    <span class="font-bold text-xl text-white tracking-tight">Port<span class="text-brand-secondary">Ops</span> Pro</span>
+                </div>
+                <div class="hidden lg:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#intro" class="text-gray-300 hover:text-white hover:bg-brand-primary/50 px-3 py-2 rounded-md text-sm font-medium transition">Intro</a>
+                        <a href="#el-contenedor" class="text-gray-300 hover:text-white hover:bg-brand-primary/50 px-3 py-2 rounded-md text-sm font-medium transition">Contenedores</a>
+                        <a href="#flujo" class="text-gray-300 hover:text-white hover:bg-brand-primary/50 px-3 py-2 rounded-md text-sm font-medium transition">Flujos Logísticos</a>
+                        <a href="#seguridad" class="text-gray-300 hover:text-white hover:bg-brand-primary/50 px-3 py-2 rounded-md text-sm font-medium transition">Seguridad & Normas</a>
+                        <a href="#equipos" class="text-gray-300 hover:text-white hover:bg-brand-primary/50 px-3 py-2 rounded-md text-sm font-medium transition">Equipos</a>
+                        <a href="#tecnologia" class="text-gray-300 hover:text-white hover:bg-brand-primary/50 px-3 py-2 rounded-md text-sm font-medium transition">TOS</a>
+                    </div>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="lg:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-300 hover:text-white focus:outline-none">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-brand-dark pb-4 px-4 border-b border-gray-700">
+            <a href="#intro" class="block text-gray-300 hover:text-white py-2 text-base font-medium">Intro</a>
+            <a href="#el-contenedor" class="block text-gray-300 hover:text-white py-2 text-base font-medium">Contenedores</a>
+            <a href="#flujo" class="block text-gray-300 hover:text-white py-2 text-base font-medium">Flujos Logísticos</a>
+            <a href="#seguridad" class="block text-gray-300 hover:text-white py-2 text-base font-medium">Seguridad & Normativas</a>
+            <a href="#equipos" class="block text-gray-300 hover:text-white py-2 text-base font-medium">Equipos</a>
+            <a href="#tecnologia" class="block text-gray-300 hover:text-white py-2 text-base font-medium">TOS</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="intro" class="hero-bg relative h-screen flex items-center justify-center text-center pt-20">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent to-brand-dark/95"></div>
+        <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <span class="uppercase tracking-[0.3em] text-brand-secondary font-bold text-sm sm:text-base mb-4 block">Ingeniería Logística Global</span>
+            <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold text-white leading-tight mb-6 drop-shadow-lg">
+                Gestión Integral de <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-secondary to-cyan-300">Terminales Portuarias</span>
+            </h1>
+            <p class="mt-4 text-xl sm:text-2xl text-gray-300 max-w-3xl mx-auto font-light leading-relaxed mb-10">
+                Guía técnica sobre la anatomía, flujos, normativas de seguridad y gestión del inventario que mueve al mundo: el contenedor.
+            </p>
+            <a href="#el-contenedor" class="inline-flex items-center justify-center px-8 py-4 text-base font-bold rounded-full text-white bg-brand-secondary hover:bg-brand-primary transition-all shadow-lg hover:shadow-brand-secondary/50 transform hover:-translate-y-1">
+                Análisis del Contenedor <i class="fa-solid fa-box-open ml-2"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- 1. El Protagonista: El Contenedor (Se agregó scroll-mt-24) -->
+    <section id="el-contenedor" class="py-24 container-bg fade-in-section scroll-mt-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-brand-secondary font-bold tracking-wider uppercase text-sm">El Estándar ISO</span>
+                <h2 class="text-3xl md:text-5xl font-bold text-brand-dark mt-2 mb-6">Anatomía y Tipos de Contenedores</h2>
+                <p class="text-lg text-gray-600">La estandarización de estas cajas de acero (generalmente de acero Corten anticorrosivo) revolucionó el comercio. Todo en la terminal se diseña alrededor de sus dimensiones estandarizadas (TEU = contenedor de 20 pies, FEU = 40 pies).</p>
+            </div>
+
+            <!-- Anatomía -->
+            <div class="bg-white rounded-2xl shadow-xl p-8 mb-12 border border-gray-100 relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-8 text-gray-100 opacity-20 pointer-events-none">
+                    <i class="fa-solid fa-fingerprint text-9xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-brand-dark mb-6 relative z-10"><i class="fa-solid fa-microscope text-brand-secondary mr-2"></i> Requisitos y Anatomía Crítica</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+                    <div>
+                        <h4 class="font-bold text-gray-800 mb-2 border-l-4 border-brand-secondary pl-2">Esquineros (Corner Castings)</h4>
+                        <p class="text-sm text-gray-600">Piezas de acero en las 8 esquinas con orificios estandarizados. Son el único punto por donde las grúas (mediante <em>twistlocks</em> en el spreader) levantan la caja.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-800 mb-2 border-l-4 border-brand-secondary pl-2">Placa CSC</h4>
+                        <p class="text-sm text-gray-600"><em>Container Safety Convention</em>. Es el "pasaporte" del contenedor. Certifica que es estructuralmente seguro para ser apilado y manipulado bajo tensión.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-800 mb-2 border-l-4 border-brand-secondary pl-2">Número de Identificación</h4>
+                        <p class="text-sm text-gray-600">Formato ISO 6346 (Ej: HLXU 123456-7). 3 letras del propietario, 'U' (unidad), 6 dígitos y 1 dígito de control matemático para sistemas OCR.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-800 mb-2 border-l-4 border-brand-secondary pl-2">Piso de Madera Tratada</h4>
+                        <p class="text-sm text-gray-600">Normalmente madera contrachapada marina. Tratada químicamente para cumplir normativas fitosanitarias internacionales y soportar montacargas pesados en su interior.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tipos de Contenedores y Casos Especiales -->
+            <h3 class="text-2xl font-bold text-brand-dark mb-8 text-center">Variantes y Manejo Especial en Terminal</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Dry Van -->
+                <div class="bg-white p-6 rounded-2xl shadow-lg border-t-4 border-gray-400">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="text-xl font-bold text-gray-800">Dry Van / High Cube</h4>
+                        <i class="fa-solid fa-box text-2xl text-gray-400"></i>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">Contenedor estándar cerrado. El <em>High Cube</em> (HC) es 1 pie más alto (9'6" vs 8'6"), ideal para carga voluminosa pero ligera.</p>
+                    <div class="bg-gray-50 p-3 rounded text-xs text-gray-500">
+                        <strong>Gestión:</strong> Flujo estándar. Almacenamiento regular en bloques de patio (hasta 6-7 alturas).
+                    </div>
+                </div>
+
+                <!-- Reefer -->
+                <div class="bg-white p-6 rounded-2xl shadow-lg border-t-4 border-blue-500">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="text-xl font-bold text-gray-800">Refrigerado (Reefer)</h4>
+                        <i class="fa-solid fa-snowflake text-2xl text-blue-500"></i>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">Mantiene temperatura controlada para perecederos. Tienen su propio motor refrigerante que requiere energía externa.</p>
+                    <div class="bg-blue-50 p-3 rounded text-xs text-blue-800">
+                        <strong>Gestión:</strong> Requieren área especial en patio (<em>Reefer Racks</em>) con enchufes. Operadores deben monitorear temperatura cada 4-8 hrs e inspección pre-viaje (PTI).
+                    </div>
+                </div>
+
+                <!-- OOG (Open Top / Flat Rack) -->
+                <div class="bg-white p-6 rounded-2xl shadow-lg border-t-4 border-purple-500">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="text-xl font-bold text-gray-800">OOG (Carga Sobredimensionada)</h4>
+                        <i class="fa-solid fa-truck-pickup text-2xl text-purple-500"></i>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4"><em>Open Top</em> (sin techo) o <em>Flat Rack</em> (solo piso y cabezales) para carga que sobresale en altura o anchura (maquinaria, yates).</p>
+                    <div class="bg-purple-50 p-3 rounded text-xs text-purple-800">
+                        <strong>Gestión:</strong> Requieren un <em>Overheight Frame</em> (accesorio para la grúa STS). No se pueden apilar otros contenedores encima si la carga sobresale.
+                    </div>
+                </div>
+
+                <!-- Isotanque / IMO -->
+                <div class="bg-white p-6 rounded-2xl shadow-lg border-t-4 border-red-500 lg:col-span-3">
+                    <div class="flex flex-col md:flex-row gap-6 items-start md:items-center">
+                        <div class="flex-shrink-0 w-16 h-16 bg-red-100 rounded-full flex items-center justify-center text-red-500 text-3xl">
+                            <i class="fa-solid fa-skull-crossbones"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-bold text-gray-800 mb-2">Carga Peligrosa (IMO / Hazmat) e Isotanques</h4>
+                            <p class="text-sm text-gray-600 mb-2">Contenedores que transportan químicos, gases inflamables, explosivos o corrosivos, regidos por el Código IMDG. Incluye contenedores tanque (Isotanques).</p>
+                            <div class="bg-red-50 p-3 rounded text-xs text-red-800 border border-red-100">
+                                <strong>Gestión de Riesgos en Terminal:</strong> Segregación estricta obligatoria. Un contenedor inflamable debe estar a "X" posiciones de distancia de uno explosivo. Las áreas IMO en el patio suelen tener muros de contención antiderrame y sistemas de extinción de espuma integrados en el suelo.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. Flujos Logísticos Específicos (Se agregó scroll-mt-24) -->
+    <section id="flujo" class="py-24 bg-white fade-in-section scroll-mt-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <i class="fa-solid fa-route text-5xl text-brand-secondary mb-6"></i>
+                <h2 class="text-3xl md:text-5xl font-bold text-brand-dark mb-6">El Ciclo de Vida: Flujos de la Carga</h2>
+                <p class="text-lg text-gray-600">Un contenedor nunca se mueve "al azar". Existen 3 flujos principales que dictan su trayectoria y las reglas de negocio aplicadas en el sistema (TOS).</p>
+            </div>
+
+            <div class="space-y-12">
+                <!-- Flujo Exportación -->
+                <div class="relative bg-brand-light p-8 rounded-2xl shadow border border-gray-200">
+                    <div class="absolute -left-4 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-brand-secondary rounded-full flex items-center justify-center text-white font-bold shadow-lg">E</div>
+                    <h3 class="text-2xl font-bold text-brand-dark mb-4 pl-4 border-l-2 border-brand-secondary">Ciclo de Exportación (Outbound)</h3>
+                    <div class="flex flex-col md:flex-row items-center gap-4 text-sm font-medium text-gray-600">
+                        <div class="flex-1 bg-white p-4 rounded-lg shadow-sm border border-gray-100 text-center relative w-full">
+                            <i class="fa-solid fa-truck-arrow-right text-brand-secondary text-2xl mb-2 block"></i>
+                            <strong>1. Gate In</strong><br><span class="text-xs text-gray-500">Camión entrega lleno. Chequeo de reservas, peso y sellos.</span>
+                            <i class="fa-solid fa-chevron-right absolute -right-3 top-1/2 transform -translate-y-1/2 text-gray-300 text-xl hidden md:block"></i>
+                        </div>
+                        <div class="flex-1 bg-white p-4 rounded-lg shadow-sm border border-gray-100 text-center relative w-full">
+                            <i class="fa-solid fa-layer-group text-brand-secondary text-2xl mb-2 block"></i>
+                            <strong>2. Yard Stacking</strong><br><span class="text-xs text-gray-500">Agrupado por barco, puerto de destino y rango de peso.</span>
+                            <i class="fa-solid fa-chevron-right absolute -right-3 top-1/2 transform -translate-y-1/2 text-gray-300 text-xl hidden md:block"></i>
+                        </div>
+                        <div class="flex-1 bg-white p-4 rounded-lg shadow-sm border border-gray-100 text-center relative w-full">
+                            <i class="fa-solid fa-truck-ramp-box text-brand-secondary text-2xl mb-2 block"></i>
+                            <strong>3. Transferencia</strong><br><span class="text-xs text-gray-500">Tractores lo llevan al muelle justo a tiempo (JIT).</span>
+                            <i class="fa-solid fa-chevron-right absolute -right-3 top-1/2 transform -translate-y-1/2 text-gray-300 text-xl hidden md:block"></i>
+                        </div>
+                        <div class="flex-1 bg-white p-4 rounded-lg shadow-sm border border-gray-100 text-center w-full">
+                            <i class="fa-solid fa-ship text-brand-secondary text-2xl mb-2 block"></i>
+                            <strong>4. Carga (Load)</strong><br><span class="text-xs text-gray-500">Grúa STS lo estiba en la bodega/cubierta del buque.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Flujo Importación -->
+                <div class="relative bg-brand-light p-8 rounded-2xl shadow border border-gray-200">
+                    <div class="absolute -left-4 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold shadow-lg">I</div>
+                    <h3 class="text-2xl font-bold text-brand-dark mb-4 pl-4 border-l-2 border-green-500">Ciclo de Importación (Inbound)</h3>
+                    <div class="flex flex-col md:flex-row items-center gap-4 text-sm font-medium text-gray-600">
+                        <div class="flex-1 bg-white p-4 rounded-lg shadow-sm border border-gray-100 text-center relative w-full">
+                            <i class="fa-solid fa-ship text-green-500 text-2xl mb-2 block"></i>
+                            <strong>1. Descarga (Discharge)</strong><br><span class="text-xs text-gray-500">Grúa STS retira del barco según plan de estiba.</span>
+                            <i class="fa-solid fa-chevron-right absolute -right-3 top-1/2 transform -translate-y-1/2 text-gray-300 text-xl hidden md:block"></i>
+                        </div>
+                        <div class="flex-1 bg-white p-4 rounded-lg shadow-sm border border-gray-100 text-center relative w-full">
+                            <i class="fa-solid fa-layer-group text-green-500 text-2xl mb-2 block"></i>
+                            <strong>2. Yard Stacking</strong><br><span class="text-xs text-gray-500">Apilado en bloque de importación. Espera aduana.</span>
+                            <i class="fa-solid fa-chevron-right absolute -right-3 top-1/2 transform -translate-y-1/2 text-gray-300 text-xl hidden md:block"></i>
+                        </div>
+                        <div class="flex-1 bg-white p-4 rounded-lg shadow-sm border border-gray-100 text-center relative w-full">
+                            <i class="fa-solid fa-magnifying-glass text-green-500 text-2xl mb-2 block"></i>
+                            <strong>3. Inspección (Opcional)</strong><br><span class="text-xs text-gray-500">Movimiento a zona de aforo / rayos X si es requerido.</span>
+                            <i class="fa-solid fa-chevron-right absolute -right-3 top-1/2 transform -translate-y-1/2 text-gray-300 text-xl hidden md:block"></i>
+                        </div>
+                        <div class="flex-1 bg-white p-4 rounded-lg shadow-sm border border-gray-100 text-center w-full">
+                            <i class="fa-solid fa-truck-moving text-green-500 text-2xl mb-2 block"></i>
+                            <strong>4. Gate Out</strong><br><span class="text-xs text-gray-500">Camión consignatario lo retira hacia centro distribución.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Flujo Transbordo -->
+                <div class="relative bg-brand-dark p-8 rounded-2xl shadow-xl">
+                    <div class="absolute -left-4 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-brand-accent rounded-full flex items-center justify-center text-brand-dark font-bold shadow-lg">T</div>
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-2xl font-bold text-white pl-4 border-l-2 border-brand-accent">Transbordo (Transshipment)</h3>
+                        <span class="bg-brand-accent/20 text-brand-accent text-xs px-3 py-1 rounded-full border border-brand-accent/30 hidden sm:block">Zonas Hub (Ej. Panamá, Singapur)</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-6 max-w-3xl">El contenedor no sale de la terminal por tierra. Llega en un barco (generalmente un buque nodriza o <em>Mother Vessel</em>) y se descarga en el patio temporalmente. Días después, se carga en un barco diferente (generalmente un barco alimentador o <em>Feeder</em>) hacia su destino final. Es el modelo "Hub & Spoke".</p>
+                    
+                    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div class="text-center w-full md:w-1/3">
+                            <i class="fa-solid fa-ship text-brand-accent text-3xl mb-2"></i>
+                            <p class="text-white font-bold">Buque A (Descarga)</p>
+                        </div>
+                        <div class="text-center w-full md:w-1/3 flex flex-col items-center">
+                            <i class="fa-solid fa-arrow-right-arrow-left text-gray-500 text-xl mb-2 transform rotate-90 md:rotate-0"></i>
+                            <div class="bg-gray-700 px-4 py-2 rounded text-sm text-gray-300 border border-gray-600 w-full mt-2 md:mt-0">Estadía en Patio (Dwell Time corto)</div>
+                        </div>
+                        <div class="text-center w-full md:w-1/3 mt-2 md:mt-0">
+                            <i class="fa-solid fa-ship text-brand-accent text-3xl mb-2 transform scale-x-[-1]"></i>
+                            <p class="text-white font-bold">Buque B (Carga)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Seguridad y Normativas (Se agregó scroll-mt-24) -->
+    <section id="seguridad" class="py-24 bg-gray-50 fade-in-section border-t border-gray-200 scroll-mt-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row gap-12 items-center">
+                <div class="lg:w-1/3">
+                    <h2 class="text-3xl md:text-5xl font-bold text-brand-dark mb-6">Muro de Seguridad Global</h2>
+                    <p class="text-lg text-gray-600 mb-6">Las terminales portuarias son fronteras internacionales críticas. Existen normativas globales estrictas para evitar el terrorismo, el narcotráfico y accidentes marítimos graves.</p>
+                    <ul class="space-y-4 text-gray-700 font-medium">
+                        <li class="flex items-center"><i class="fa-solid fa-shield-halved text-brand-secondary mr-3 text-xl"></i> Código ISPS (Protección de Buques e Instalaciones)</li>
+                        <li class="flex items-center"><i class="fa-solid fa-scale-balanced text-brand-secondary mr-3 text-xl"></i> Regulaciones SOLAS (Seguridad de la Vida Humana en el Mar)</li>
+                        <li class="flex items-center"><i class="fa-solid fa-passport text-brand-secondary mr-3 text-xl"></i> Controles de Autoridad Aduanera y OEA</li>
+                    </ul>
+                </div>
+                
+                <div class="lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- VGM -->
+                    <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-600 hover:-translate-y-1 transition duration-300">
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="text-lg font-bold text-gray-800">Pesaje VGM (Masa Bruta Verificada)</h4>
+                            <i class="fa-solid fa-weight-scale text-2xl text-blue-200"></i>
+                        </div>
+                        <p class="text-sm text-gray-600">Normativa SOLAS introducida tras accidentes navales por pesos falsos. <strong>Es ilegal cargar un contenedor a un barco sin su VGM certificado.</strong> La terminal pesa el camión al entrar (báscula) o utiliza la grúa para calcular el peso exacto del contenedor.</p>
+                    </div>
+
+                    <!-- Escáner NII -->
+                    <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-600 hover:-translate-y-1 transition duration-300">
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="text-lg font-bold text-gray-800">Inspección No Intrusiva (Escáner)</h4>
+                            <i class="fa-solid fa-x-ray text-2xl text-green-200"></i>
+                        </div>
+                        <p class="text-sm text-gray-600">Sistemas de Rayos X o Rayos Gamma de alta penetración operados por Aduanas. El camión pasa a través de un portal masivo que "radiografía" el interior en busca de contrabando, drogas o discrepancias con el manifiesto de carga (Bill of Lading).</p>
+                    </div>
+
+                    <!-- Precintos -->
+                    <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-amber-500 hover:-translate-y-1 transition duration-300">
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="text-lg font-bold text-gray-800">Precintos de Alta Seguridad</h4>
+                            <i class="fa-solid fa-lock text-2xl text-amber-200"></i>
+                        </div>
+                        <p class="text-sm text-gray-600">Sellos tipo botella o cable (estándar ISO 17712) colocados en las barras de cierre de las puertas. La terminal verifica visualmente o vía OCR que el sello esté intacto a la entrada y salida, asegurando la cadena de custodia.</p>
+                    </div>
+
+                    <!-- Daños y Sellos (EIR) -->
+                    <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-purple-600 hover:-translate-y-1 transition duration-300">
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="text-lg font-bold text-gray-800">Inspección de Daños (EIR)</h4>
+                            <i class="fa-solid fa-clipboard-check text-2xl text-purple-200"></i>
+                        </div>
+                        <p class="text-sm text-gray-600">Generación del <em>Equipment Interchange Receipt</em>. En las puertas de acceso, sistemas automatizados con decenas de cámaras evalúan abolladuras, rasguños o daños estructurales transfiriendo la responsabilidad (liability) entre transportista y terminal.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Equipamiento (Se agregó scroll-mt-24) -->
+    <section id="equipos" class="py-24 bg-brand-dark text-white fade-in-section scroll-mt-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row gap-12">
+                <div class="lg:w-1/3">
+                    <span class="text-brand-secondary font-bold tracking-wider uppercase text-sm">Fuerza Bruta y Precisión</span>
+                    <h2 class="text-3xl md:text-5xl font-bold mt-2 mb-6">Equipamiento Portuario</h2>
+                    <p class="text-gray-400 mb-8 text-lg">Las máquinas colosales encargadas de mover las cajas de acero de forma segura y veloz.</p>
+                    
+                    <!-- Vertical Tabs Navigation -->
+                    <div class="flex flex-col space-y-2" id="equipment-tabs">
+                        <button class="tab-btn text-left px-6 py-4 rounded-lg bg-brand-secondary text-white font-bold transition flex items-center justify-between" data-target="sts">
+                            Grúas STS <i class="fa-solid fa-chevron-right text-sm"></i>
+                        </button>
+                        <button class="tab-btn text-left px-6 py-4 rounded-lg hover:bg-gray-800 text-gray-300 font-medium transition flex items-center justify-between" data-target="rtg">
+                            Grúas de Patio (RTG/RMG) <i class="fa-solid fa-chevron-right text-sm opacity-0"></i>
+                        </button>
+                        <button class="tab-btn text-left px-6 py-4 rounded-lg hover:bg-gray-800 text-gray-300 font-medium transition flex items-center justify-between" data-target="sc">
+                            Straddle Carriers <i class="fa-solid fa-chevron-right text-sm opacity-0"></i>
+                        </button>
+                        <button class="tab-btn text-left px-6 py-4 rounded-lg hover:bg-gray-800 text-gray-300 font-medium transition flex items-center justify-between" data-target="rs">
+                            Reach Stackers <i class="fa-solid fa-chevron-right text-sm opacity-0"></i>
+                        </button>
+                        <button class="tab-btn text-left px-6 py-4 rounded-lg hover:bg-gray-800 text-gray-300 font-medium transition flex items-center justify-between" data-target="tt">
+                            Transporte Horizontal <i class="fa-solid fa-chevron-right text-sm opacity-0"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="lg:w-2/3">
+                    <!-- Tab Contents -->
+                    <div class="bg-gray-800/80 backdrop-blur rounded-2xl p-8 lg:p-10 border border-gray-700 min-h-[500px] shadow-2xl">
+                        
+                        <!-- STS Content -->
+                        <div id="sts" class="tab-content active block animate-[fadeIn_0.5s_ease-in-out]">
+                            <h3 class="text-3xl font-bold mb-4 text-brand-secondary">Grúas STS (Ship-to-Shore)</h3>
+                            <div class="aspect-video w-full rounded-xl bg-gray-900 mb-6 overflow-hidden relative border border-gray-700">
+                                <img src="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Grúa STS" class="w-full h-full object-cover opacity-80">
+                            </div>
+                            <p class="text-gray-300 leading-relaxed mb-4">
+                                Las grúas pórtico de muelle son la primera línea de la terminal. Son estructuras gigantescas que se desplazan sobre rieles paralelos al agua. Cuestan entre 10 y 15 millones de dólares cada una.
+                            </p>
+                            <ul class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-400 mt-6">
+                                <li class="flex items-start"><i class="fa-solid fa-caret-right text-brand-secondary mt-1 mr-2"></i> <strong>Alcance (Outreach):</strong> Las "Megamax" pueden alcanzar más de 24 filas de contenedores a lo ancho de los megabuques modernos.</li>
+                                <li class="flex items-start"><i class="fa-solid fa-caret-right text-brand-secondary mt-1 mr-2"></i> <strong>Spreader Telescópico:</strong> El marco que se expande mecánicamente para agarrar contenedores de 20 o 40 pies.</li>
+                                <li class="flex items-start"><i class="fa-solid fa-caret-right text-brand-secondary mt-1 mr-2"></i> <strong>Twin-lift / Tandem:</strong> Capacidad avanzada de levantar 2 (Twin) o hasta 4 (Tandem) contenedores vacíos simultáneamente para acelerar la productividad.</li>
+                            </ul>
+                        </div>
+
+                        <!-- RTG/RMG Content -->
+                        <div id="rtg" class="tab-content hidden animate-[fadeIn_0.5s_ease-in-out]">
+                            <h3 class="text-3xl font-bold mb-4 text-brand-secondary">Grúas de Patio (RTG y RMG)</h3>
+                            <p class="text-gray-300 leading-relaxed mb-4">
+                                Encargadas de organizar los inmensos bloques de contenedores en el patio de la terminal. Apilan la carga con precisión milimétrica.
+                            </p>
+                            <div class="space-y-4 text-sm text-gray-400 mt-6">
+                                <div class="bg-gray-900 p-5 rounded-lg border border-gray-700">
+                                    <h4 class="text-white font-bold mb-2 flex items-center"><i class="fa-solid fa-truck-monster text-brand-secondary mr-2"></i> RTG (Rubber-Tired Gantry)</h4>
+                                    <p>Grúas sobre grandes neumáticos de caucho. Son muy flexibles ya que pueden girar sus ruedas 90 grados y cambiar de bloque (stack) conduciendo por el patio. Suelen apilar 5-6 contenedores de alto y 6-7 de ancho. Históricamente diésel, ahora migradas a eléctricas (eRTG).</p>
+                                </div>
+                                <div class="bg-gray-900 p-5 rounded-lg border border-gray-700">
+                                    <h4 class="text-white font-bold mb-2 flex items-center"><i class="fa-solid fa-train-tram text-brand-secondary mr-2"></i> RMG / ASC (Rail-Mounted)</h4>
+                                    <p>Grúas sobre rieles fijos de acero. Tienen mayor luz (ancho) y velocidad que las RTG. Generalmente están 100% automatizadas (ASC - Automated Stacking Cranes), operando a oscuras y gestionadas por software.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- SC Content -->
+                         <div id="sc" class="tab-content hidden animate-[fadeIn_0.5s_ease-in-out]">
+                            <h3 class="text-3xl font-bold mb-4 text-brand-secondary">Straddle Carriers (Carretillas Pórtico)</h3>
+                            <p class="text-gray-300 leading-relaxed mb-4">
+                                Vehículos altos y estrechos que se ubican "a horcajadas" sobre el contenedor para levantarlo centralmente.
+                            </p>
+                            <p class="text-gray-300 leading-relaxed mb-6">
+                                Operación Desacoplada: Son únicas porque realizan dos tareas: transportan contenedores desde la grúa al patio y además los apilan (hasta 4 alturas). Permiten que la grúa STS deposite la caja en el suelo y siga trabajando sin esperar a un camión.
+                            </p>
+                            <div class="grid grid-cols-2 gap-4 text-center mt-8">
+                                <div class="p-4 bg-gray-900 border border-gray-700 rounded-lg">
+                                    <i class="fa-solid fa-tachometer-alt text-3xl text-brand-secondary mb-2"></i>
+                                    <h5 class="font-bold text-white">Alta Agilidad</h5>
+                                </div>
+                                <div class="p-4 bg-gray-900 border border-gray-700 rounded-lg">
+                                    <i class="fa-solid fa-people-carry text-3xl text-brand-secondary mb-2"></i>
+                                    <h5 class="font-bold text-white">Operación Independiente</h5>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RS Content -->
+                        <div id="rs" class="tab-content hidden animate-[fadeIn_0.5s_ease-in-out]">
+                            <h3 class="text-3xl font-bold mb-4 text-brand-secondary">Reach Stackers & Empty Handlers</h3>
+                            <p class="text-gray-300 leading-relaxed mb-4">
+                                Equipos de manipulación frontal con características muy diferentes a las grúas pórtico.
+                            </p>
+                            <ul class="space-y-4 text-gray-400 mt-6">
+                                <li class="bg-gray-900 p-5 rounded-lg border-l-4 border-amber-500 shadow-md">
+                                    <h4 class="text-white font-bold mb-1">Reach Stackers (Portacontenedores de alcance)</h4>
+                                    <p class="text-sm">Vehículos con un brazo telescópico masivo. Ideales para terminales ferroviarias intermodales o patios pequeños. Tienen la ventaja de poder alcanzar la segunda o tercera fila de un bloque de contenedores sin mover los de enfrente.</p>
+                                </li>
+                                <li class="bg-gray-900 p-5 rounded-lg border-l-4 border-blue-500 shadow-md">
+                                    <h4 class="text-white font-bold mb-1">Empty Container Handlers (Manejadores de Vacíos)</h4>
+                                    <p class="text-sm">Específicos para contenedores sin carga. Al pesar muy poco (2 a 4 toneladas en vacío), estas máquinas pueden apilar hasta 8 o 9 contenedores de alto utilizando ganchos laterales o un spreader de agarre único (single/double pick).</p>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- TT Content -->
+                        <div id="tt" class="tab-content hidden animate-[fadeIn_0.5s_ease-in-out]">
+                            <h3 class="text-3xl font-bold mb-4 text-brand-secondary">Transferencia Horizontal</h3>
+                            <div class="aspect-video w-full rounded-xl bg-gray-900 mb-6 overflow-hidden relative border border-gray-700">
+                                <img src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Camión portuario" class="w-full h-full object-cover opacity-80">
+                            </div>
+                            <p class="text-gray-300 leading-relaxed mb-4">
+                                El eslabón vital que conecta la zona de la grúa STS con los bloques del patio.
+                            </p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                                <div>
+                                    <h4 class="text-white font-bold mb-2 flex items-center"><i class="fa-solid fa-truck text-brand-secondary mr-2"></i> Terminal Tractors (TT)</h4>
+                                    <p class="text-sm text-gray-400">Camiones especializados de quinta rueda reforzada (Marcas como Terberg, Kalmar). Arrastran chasis portacontenedores. Están diseñados para máxima visibilidad, torque rápido y enganche veloz. Operación humana.</p>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-bold mb-2 flex items-center"><i class="fa-solid fa-robot text-brand-secondary mr-2"></i> AGVs</h4>
+                                    <p class="text-sm text-gray-400">Vehículos Guiados Automáticamente. Plataformas planas sin cabina que transportan el contenedor. Se mueven con precisión milimétrica mediante transpondedores embebidos en el asfalto. Usados en mega-puertos automatizados.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Tecnología (TOS) y KPIs (Se agregó scroll-mt-24) -->
+    <section id="tecnologia" class="py-24 bg-white fade-in-section scroll-mt-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <i class="fa-solid fa-network-wired text-5xl text-brand-secondary mb-6"></i>
+                <h2 class="text-3xl md:text-5xl font-bold text-brand-dark mb-6">El Cerebro Operativo: Software TOS</h2>
+                <p class="text-lg text-gray-600">En una terminal que mueve millones de TEUs, el error humano de "perder un contenedor" es catastrófico. El <strong>Terminal Operating System (TOS)</strong> planifica, optimiza y ejecuta todo virtualmente.</p>
+            </div>
+
+            <!-- TOS Modules Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+                <!-- Modulo 1 -->
+                <div class="bg-gray-50 p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition">
+                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-brand-secondary shadow-sm mb-4">
+                        <i class="fa-solid fa-anchor"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-brand-dark mb-2">Vessel Planning</h4>
+                    <p class="text-gray-600 text-sm">Calcula la estiba del barco (archivos EDI BAPLIE). Optimiza la secuencia de carga considerando: peso (pesados abajo), puerto de destino (primer puerto arriba) y mercancía peligrosa (segregación).</p>
+                </div>
+                <!-- Modulo 2 -->
+                <div class="bg-gray-50 p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition">
+                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-brand-secondary shadow-sm mb-4">
+                        <i class="fa-solid fa-cubes-stacked"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-brand-dark mb-2">Yard Planning</h4>
+                    <p class="text-gray-600 text-sm">Asigna posiciones X,Y,Z en el patio. Su objetivo principal es evitar "Removidos" (Shuffling) productivos y no productivos, agrupando la exportación según el buque que está por llegar.</p>
+                </div>
+                <!-- Modulo 3 -->
+                <div class="bg-gray-50 p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition">
+                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-brand-secondary shadow-sm mb-4">
+                        <i class="fa-solid fa-route"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-brand-dark mb-2">Equipment Control</h4>
+                    <p class="text-gray-600 text-sm">Despacho de tareas (Pooling/Dispatching). Algoritmos que deciden, por ejemplo, qué camión libre debe atender a qué grúa para minimizar distancias de viaje en vacío (reducción de emisiones y costos).</p>
+                </div>
+                <!-- Modulo 4 -->
+                <div class="bg-gray-50 p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition">
+                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-brand-secondary shadow-sm mb-4">
+                        <i class="fa-solid fa-calendar-check"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-brand-dark mb-2">Gate Appointments</h4>
+                    <p class="text-gray-600 text-sm">Sistemas de citas (TAS) para transportistas terrestres. Aplana los "picos" de congestión al forzar a los camioneros a reservar franjas horarias específicas para recoger o dejar carga.</p>
+                </div>
+            </div>
+
+            <!-- KPIs -->
+            <h3 class="text-2xl font-bold text-brand-dark mb-8 text-center border-t border-gray-200 pt-12">Métricas de Rentabilidad (KPIs Core)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- KPI 1 -->
+                <div class="bg-white p-6 rounded-xl border border-gray-200 flex items-center gap-4">
+                    <div class="p-4 bg-brand-light rounded-lg text-brand-secondary text-2xl"><i class="fa-solid fa-stopwatch-20"></i></div>
+                    <div>
+                        <h4 class="font-bold text-gray-800">Gross Crane Rate (GCR)</h4>
+                        <p class="text-sm text-gray-500 mb-1">Movimientos por hora por grúa STS.</p>
+                        <p class="text-xl font-black text-brand-secondary">25 - 35 <span class="text-xs font-normal">MPH</span></p>
+                    </div>
+                </div>
+                <!-- KPI 2 -->
+                <div class="bg-white p-6 rounded-xl border border-gray-200 flex items-center gap-4">
+                    <div class="p-4 bg-amber-50 rounded-lg text-amber-500 text-2xl"><i class="fa-solid fa-calendar-day"></i></div>
+                    <div>
+                        <h4 class="font-bold text-gray-800">Dwell Time (Tiempo Estancia)</h4>
+                        <p class="text-sm text-gray-500 mb-1">Días del contenedor en patio.</p>
+                        <p class="text-xl font-black text-amber-500">2 - 5 <span class="text-xs font-normal">Días</span></p>
+                    </div>
+                </div>
+                <!-- KPI 3 -->
+                <div class="bg-white p-6 rounded-xl border border-gray-200 flex items-center gap-4">
+                    <div class="p-4 bg-green-50 rounded-lg text-green-600 text-2xl"><i class="fa-solid fa-truck-fast"></i></div>
+                    <div>
+                        <h4 class="font-bold text-gray-800">Truck Turnaround (TTT)</h4>
+                        <p class="text-sm text-gray-500 mb-1">Tiempo de camión externo en terminal.</p>
+                        <p class="text-xl font-black text-green-600">< 40 <span class="text-xs font-normal">Minutos</span></p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 6. Comentarios -->
+    <section id="comentarios" class="py-24 bg-gray-50 fade-in-section scroll-mt-24 border-t border-gray-200">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <i class="fa-solid fa-comments text-4xl text-brand-secondary mb-4"></i>
+                <h2 class="text-3xl md:text-4xl font-bold text-brand-dark mb-4">Comunidad y Debate</h2>
+                <p class="text-gray-600">¿Tienes alguna duda o quieres compartir tu experiencia en operaciones portuarias? Déjanos tu comentario.</p>
+            </div>
+
+            <!-- Formulario de comentarios -->
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-md border border-gray-100 mb-10">
+                <form id="comment-form" class="space-y-6">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                        <input type="text" id="name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-brand-secondary focus:border-brand-secondary transition outline-none" placeholder="Tu nombre">
+                    </div>
+                    <div>
+                        <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Comentario</label>
+                        <textarea id="message" required rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-brand-secondary focus:border-brand-secondary transition outline-none resize-none" placeholder="Escribe tu mensaje aquí..."></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-brand-secondary hover:bg-brand-primary text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md flex items-center justify-center gap-2">
+                        Publicar Comentario <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Lista de comentarios -->
+            <div class="space-y-6" id="comments-list">
+                <!-- Comentario de ejemplo 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 bg-brand-primary/10 rounded-full flex items-center justify-center text-brand-primary font-bold text-xl">
+                        C
+                    </div>
+                    <div>
+                        <div class="flex items-baseline gap-2 mb-1">
+                            <h4 class="font-bold text-gray-800">Carlos Méndez</h4>
+                            <span class="text-xs text-gray-500">Hace 2 días</span>
+                        </div>
+                        <p class="text-gray-600 text-sm leading-relaxed">Excelente artículo. Muy bien explicada la diferencia entre las RTG y las RMG. Me gustaría ver más sobre los tiempos muertos en las citas de camiones (TAS).</p>
+                    </div>
+                </div>
+                <!-- Comentario de ejemplo 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 bg-amber-500/10 rounded-full flex items-center justify-center text-amber-500 font-bold text-xl">
+                        L
+                    </div>
+                    <div>
+                        <div class="flex items-baseline gap-2 mb-1">
+                            <h4 class="font-bold text-gray-800">Laura V.</h4>
+                            <span class="text-xs text-gray-500">Hace 1 semana</span>
+                        </div>
+                        <p class="text-gray-600 text-sm leading-relaxed">Trabajo con isotanques y el nivel de detalle sobre la segregación IMO es súper acertado. ¡Gracias por compartir!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-brand-dark text-gray-300 py-12 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i class="fa-solid fa-ship text-brand-secondary text-2xl"></i>
+                        <span class="font-bold text-xl text-white tracking-tight">Port<span class="text-brand-secondary">Ops</span> Pro</span>
+                    </div>
+                    <p class="text-sm text-gray-400 max-w-sm mb-6">
+                        Recurso educativo detallado sobre la ingeniería, flujos logísticos y gestión operativa en terminales de contenedores internacionales.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="text-white font-bold mb-4 uppercase text-sm tracking-wider">Enlaces</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#el-contenedor" class="hover:text-brand-secondary transition">Tipos de Carga</a></li>
+                        <li><a href="#flujo" class="hover:text-brand-secondary transition">Flujos Operativos</a></li>
+                        <li><a href="#seguridad" class="hover:text-brand-secondary transition">ISPS & VGM</a></li>
+                        <li><a href="#equipos" class="hover:text-brand-secondary transition">Maquinaria Especial</a></li>
+                        <li><a href="#comentarios" class="hover:text-brand-secondary transition">Comentarios</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold mb-4 uppercase text-sm tracking-wider">Tópicos Avanzados</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><span class="text-gray-500">Automatización (ASC/AGV)</span></li>
+                        <li><span class="text-gray-500">Digital Twins en Puertos</span></li>
+                        <li><span class="text-gray-500">Conectividad Hinterland</span></li>
+                        <li><span class="text-gray-500">Descarbonización Portuaria</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+                <p>&copy; 2026 PortOps Pro. Creado con fines informativos y formativos.</p>
+                <p class="mt-4 md:mt-0 text-gray-400">By <span class="text-brand-secondary font-semibold">Darin Valbuena</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Mobile menu toggle
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu on click
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.add('hidden');
+            });
+        });
+
+        // Tabs functionality for Equipment section
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Reset all buttons
+                tabBtns.forEach(b => {
+                    b.classList.remove('bg-brand-secondary', 'text-white');
+                    b.classList.add('hover:bg-gray-800', 'text-gray-300');
+                    b.querySelector('i').classList.add('opacity-0');
+                });
+                
+                // Set active button
+                btn.classList.remove('hover:bg-gray-800', 'text-gray-300');
+                btn.classList.add('bg-brand-secondary', 'text-white');
+                btn.querySelector('i').classList.remove('opacity-0');
+
+                // Hide all contents
+                tabContents.forEach(content => {
+                    content.classList.add('hidden');
+                    content.classList.remove('block');
+                });
+
+                // Show targeted content
+                const targetId = btn.getAttribute('data-target');
+                const targetContent = document.getElementById(targetId);
+                targetContent.classList.remove('hidden');
+                targetContent.classList.add('block');
+            });
+        });
+
+        // Scroll Animation (Intersection Observer)
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in-section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Sticky Navbar & Auto-hide logic (Smart Navbar)
+        let lastScrollTop = 0;
+        const navbar = document.getElementById('navbar');
+
+        window.addEventListener('scroll', function() {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            // Determinar si bajamos o subimos
+            if (scrollTop > lastScrollTop && scrollTop > 80) {
+                // Si hacemos scroll hacia abajo (y ya pasamos la altura del header), escondemos la barra
+                navbar.classList.add('-translate-y-full');
+                // De paso, cerramos el menú móvil si estaba abierto
+                menu.classList.add('hidden');
+            } else {
+                // Si hacemos scroll hacia arriba, la volvemos a mostrar
+                navbar.classList.remove('-translate-y-full');
+            }
+            
+            // Lógica para que se ponga transparente si volvemos hasta arriba del todo
+            if (scrollTop > 50) {
+                navbar.classList.add('bg-brand-dark/95', 'shadow-lg');
+                navbar.classList.remove('bg-transparent');
+            } else {
+                navbar.classList.add('bg-transparent');
+                navbar.classList.remove('shadow-lg');
+            }
+            
+            // Prevenir valores negativos en celulares por el rebote (bounce effect)
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        }, false);
+
+        // Lógica para el sistema de comentarios
+        const commentForm = document.getElementById('comment-form');
+        const commentsList = document.getElementById('comments-list');
+
+        if (commentForm) {
+            commentForm.addEventListener('submit', function(e) {
+                e.preventDefault(); // Evita que la página recargue al enviar
+                
+                const nameInput = document.getElementById('name');
+                const messageInput = document.getElementById('message');
+                
+                const name = nameInput.value.trim();
+                const message = messageInput.value.trim();
+                
+                if (name && message) {
+                    // Crear nuevo elemento de comentario
+                    const initial = name.charAt(0).toUpperCase();
+                    const newComment = document.createElement('div');
+                    
+                    // Usando las clases de Tailwind y animaciones
+                    newComment.className = 'bg-white p-6 rounded-xl shadow-sm border border-brand-secondary/30 flex gap-4 animate-[fadeIn_0.5s_ease-in-out]';
+                    
+                    newComment.innerHTML = `
+                        <div class="flex-shrink-0 w-12 h-12 bg-green-500/10 rounded-full flex items-center justify-center text-green-600 font-bold text-xl">
+                            ${initial}
+                        </div>
+                        <div>
+                            <div class="flex items-baseline gap-2 mb-1">
+                                <h4 class="font-bold text-gray-800">${name}</h4>
+                                <span class="text-xs text-brand-secondary font-medium">Justo ahora</span>
+                            </div>
+                            <p class="text-gray-600 text-sm leading-relaxed">${message}</p>
+                        </div>
+                    `;
+                    
+                    // Insertar el comentario nuevo al principio de la lista
+                    commentsList.insertBefore(newComment, commentsList.firstChild);
+                    
+                    // Limpiar el formulario para el siguiente mensaje
+                    nameInput.value = '';
+                    messageInput.value = '';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
